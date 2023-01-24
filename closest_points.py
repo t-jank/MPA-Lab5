@@ -38,19 +38,8 @@ def draw_points(Points,col):
 
 def distance(A,B):
     return math.sqrt( (A[0]-B[0])**2 + (A[1]-B[1])**2 )
-'''
-def nearest_few(points): # only for 2 or 3 points
-    if len(points)==2:
-        return points
-    distances=[]
-    distances.append(distance(points[0],points[1]))
-    distances.append(distance(points[0],points[2]))
-    distances.append(distance(points[1],points[2]))
-    mi=min(distances)
-    if mi==distances[0]: return points[0],points[1]
-    elif mi==distances[1]: return points[0],points[2]
-    else: return points[1],points[2]
-'''
+
+
 def nearest_brute_force(points):
     n=len(points)
     d=999999
@@ -80,7 +69,6 @@ def nearest_up_down(points_top,points_bottom,Psol,d):
     return Psol
     
 
-
 def nearest_points(points):
     n=len(points)
     if n<4:
@@ -93,8 +81,6 @@ def nearest_points(points):
     for i in range(mid,n):
         T.append(points[i])
     kreska = T[0][1]
-  #  draw_points(T, 'b')
- #   draw_points(B, 'crimson')
     b=nearest_points(B)
     t=nearest_points(T)
     d_b=distance(b[0],b[1])
@@ -109,7 +95,7 @@ def nearest_points(points):
     bottom_to_check=[]
     top_to_check=[]
     for bb in range(0,len(B)):
-        if kreska - B[bb][1] < d:
+        if kreska - B[bb][1] < d:  # sprawdzamy odleglosc od kreski podzialu
             bottom_to_check.append(B[bb])
     for tt in range(0,len(T)):
         if T[tt][1] - kreska < d:
@@ -120,7 +106,7 @@ def nearest_points(points):
 
 
 plane = 's'
-n = 50
+n = 10
 
 points=points_generator(n, plane)
 points=sorted(points, key=lambda k: [k[1], k[0]]) # sort points by y
@@ -128,6 +114,5 @@ draw_points(points, 'k')
 
 
 np=nearest_points(points)
-print(np)
 draw_points(np,'crimson')
 
