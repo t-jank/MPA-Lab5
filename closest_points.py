@@ -67,7 +67,7 @@ def nearest_brute_force(points):
                     sol[1]=points[j]
     return sol
 
-def nearest_up_down(points_top,points_bottom,P1,P2,d):
+def nearest_up_down(points_top,points_bottom,Psol,d):
     n_top=len(points_top)
     n_bottom=len(points_bottom)
     for t in range(0, n_top):
@@ -75,9 +75,9 @@ def nearest_up_down(points_top,points_bottom,P1,P2,d):
             d_temp = distance(points_top[t], points_bottom[b])
             if  d_temp < d:
                 d=d_temp
-                P1=points_bottom[b]
-                P2=points_top[t]
-    return P1,P2
+                Psol[0]=points_bottom[b]
+                Psol[1]=points_top[t]
+    return Psol
     
 
 
@@ -92,28 +92,35 @@ def nearest_points(points):
         B.append(points[i])
     for i in range(mid,n):
         T.append(points[i])
+    kreska = T[0][1]
   #  draw_points(T, 'b')
  #   draw_points(B, 'crimson')
     b=nearest_points(B)
     t=nearest_points(T)
     d_b=distance(b[0],b[1])
     d_t=distance(t[0],t[1])
-    
     if d_t<d_b:
-    #    draw_points(t, 'orangered')
-        return t
+        psol = t
+        d = d_t
     else:
-  #      draw_points(b, 'hotpink')
-        return b
+        psol = b
+        d = d_b
+    
+    bottom_to_check=[]
+    top_to_check=[]
+    for bb in range(0,len(B)):
+        if kreska - B[bb][1] < d:
+            bottom_to_check.append(B[bb])
+    for tt in range(0,len(T)):
+        if T[tt][1] - kreska < d:
+            top_to_check.append(T[tt])
+    
+    return nearest_up_down(top_to_check, bottom_to_check, psol, d)
 
-'''
-def scal(nearests1, nearests2):
-    if distance(nearests1[0],nearests1[1]) < distance(nearests2[0],nearests2[1]): return nearests1
-    else: return nearests2
-'''
+
 
 plane = 's'
-n = 5
+n = 50
 
 points=points_generator(n, plane)
 points=sorted(points, key=lambda k: [k[1], k[0]]) # sort points by y
