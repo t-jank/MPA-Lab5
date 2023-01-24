@@ -36,7 +36,12 @@ def draw_points(Points,col):
    #     plt.xlim([0,n])
    #     plt.ylim(0,n)
 
+
+counter_of_distances_to_compute = 0
+
 def distance(A,B):
+    global counter_of_distances_to_compute
+    counter_of_distances_to_compute += 1
     return math.sqrt( (A[0]-B[0])**2 + (A[1]-B[1])**2 )
 
 
@@ -91,7 +96,6 @@ def nearest_points(points):
     else:
         psol = b
         d = d_b
-    
     bottom_to_check=[]
     top_to_check=[]
     for bb in range(0,len(B)):
@@ -100,19 +104,23 @@ def nearest_points(points):
     for tt in range(0,len(T)):
         if T[tt][1] - kreska < d:
             top_to_check.append(T[tt])
-    
     return nearest_up_down(top_to_check, bottom_to_check, psol, d)
 
 
 
 plane = 's'
-n = 10
+nMin=5
+nMax=1000
+nStep=130
+nRepeat=10
 
-points=points_generator(n, plane)
-points=sorted(points, key=lambda k: [k[1], k[0]]) # sort points by y
-draw_points(points, 'k')
+for n in range(nMin,nMax,nStep):
+    counter_of_distances_to_compute=0
+    points=points_generator(n, plane)
+    points=sorted(points, key=lambda k: [k[1], k[0]]) # sort points by y
+    np=nearest_points(points)
+    plt.scatter(n,counter_of_distances_to_compute,color='k')
 
-
-np=nearest_points(points)
-draw_points(np,'crimson')
-
+plt.xlabel('n')
+plt.ylabel('Liczba odległości do policzenia')
+plt.title('Kwadrat')
