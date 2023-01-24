@@ -13,8 +13,8 @@ def points_generator(n, plane):
     Points=[]
     if plane=='s' or plane=='square':
         for i in range(0,n):
-            x = random.random()*n+100
-            y = random.random()*n
+            x = random.uniform(0,10*n)+100
+            y = random.uniform(0,10*n)
             Points.append([x,y])
     elif plane=='c' or plane=='circle':
         while(len(Points) < n):
@@ -38,7 +38,7 @@ def draw_points(Points,col):
 
 def distance(A,B):
     return math.sqrt( (A[0]-B[0])**2 + (A[1]-B[1])**2 )
-
+'''
 def nearest_few(points): # only for 2 or 3 points
     if len(points)==2:
         return points
@@ -50,11 +50,41 @@ def nearest_few(points): # only for 2 or 3 points
     if mi==distances[0]: return points[0],points[1]
     elif mi==distances[1]: return points[0],points[2]
     else: return points[1],points[2]
+'''
+def nearest_brute_force(points):
+    n=len(points)
+    d=999999
+    sol=[]
+    sol.append([0,0])
+    sol.append([1,1])
+    for i in range(0,n):
+        for j in range(0,n):
+            if i!=j:
+                tmp_distance=distance(points[i], points[j])
+                if tmp_distance<d:
+                    d=tmp_distance
+                    sol[0]=points[i]
+                    sol[1]=points[j]
+    return sol
+
+def nearest_up_down(points_top,points_bottom,P1,P2,d):
+    n_top=len(points_top)
+    n_bottom=len(points_bottom)
+    for t in range(0, n_top):
+        for b in range(0, n_bottom):
+            d_temp = distance(points_top[t], points_bottom[b])
+            if  d_temp < d:
+                d=d_temp
+                P1=points_bottom[b]
+                P2=points_top[t]
+    return P1,P2
+    
+
 
 def nearest_points(points):
     n=len(points)
     if n<4:
-        return nearest_few(points)
+        return nearest_brute_force(points)
     mid=math.floor(n/2)
     T=[]
     B=[]
@@ -62,17 +92,18 @@ def nearest_points(points):
         B.append(points[i])
     for i in range(mid,n):
         T.append(points[i])
-    draw_points(T, 'b')
-    draw_points(B, 'crimson')
+  #  draw_points(T, 'b')
+ #   draw_points(B, 'crimson')
     b=nearest_points(B)
     t=nearest_points(T)
-    distb=distance(b[0],b[1])
-    distt=distance(t[0],t[1])
-    if distt<distb:
-        draw_points(t, 'yellow')
+    d_b=distance(b[0],b[1])
+    d_t=distance(t[0],t[1])
+    
+    if d_t<d_b:
+    #    draw_points(t, 'orangered')
         return t
     else:
-        draw_points(b, 'limegreen')
+  #      draw_points(b, 'hotpink')
         return b
 
 '''
@@ -82,12 +113,14 @@ def scal(nearests1, nearests2):
 '''
 
 plane = 's'
-n = 9
+n = 5
 
 points=points_generator(n, plane)
 points=sorted(points, key=lambda k: [k[1], k[0]]) # sort points by y
 draw_points(points, 'k')
 
 
-print(nearest_points(points))
+np=nearest_points(points)
+print(np)
+draw_points(np,'crimson')
 
