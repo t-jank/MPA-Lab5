@@ -153,7 +153,7 @@ def nearest_points(points):
     return nearest_up_down(top_to_check, bottom_to_check, psol, d)
 
 
-
+'''
 plane = 'invn'
 nMin=5
 nMax=10000
@@ -162,7 +162,6 @@ nRepeat=5
 
 ox=[]
 nlogn=[]
-dupa=[]
 for n in range(nMin,nMax,nStep):
     counter_of_distances_to_compute=0
     for r in range(0,nRepeat):
@@ -177,10 +176,46 @@ for n in range(nMin,nMax,nStep):
     else:
         plt.scatter(n,counter_of_distances_to_compute/nRepeat,color='k')
 plt.plot(ox,nlogn,color='orangered',label=str(wsp)+'*n*logn',linewidth=2.5)
-
 plt.title(plane)
 plt.xlabel('n')
 plt.ylabel('Liczba odległości do policzenia')
+plt.legend()
+plt.show()
+'''
+
+## Histogram ##
+n=1000
+nrep=5000
+alfa=0.8
+plane='invn'
+hist_data=[]
+for r in range(0,nrep):
+    counter_of_distances_to_compute=0
+    points=points_generator(n, plane)
+    points=sorted(points, key=lambda k: [k[1], k[0]])
+    np=nearest_points(points)
+    hist_data.append(counter_of_distances_to_compute)
+plt.hist(hist_data,bins=15,color='k')
+avg=statistics.mean(hist_data)
+plt.axvline(x=avg,color='orangered',label='Średnia')
+
+# Czebyszew
+deltaczeb=math.sqrt(statistics.variance(hist_data)/(1-alfa))
+plt.axvline(x=avg+deltaczeb,color='b',label='Czebyszew, α='+str(alfa))
+plt.axvline(x=avg-deltaczeb,color='b')
+
+# Rzeczywistość
+pomrzecz=[]
+for i in range(0,len(hist_data)):
+    pomrzecz.append(abs(hist_data[i]-avg))
+pomrzecz.sort()
+deltarzecz=pomrzecz[math.ceil((alfa)*len(pomrzecz))]
+plt.axvline(x=avg+deltarzecz,color='limegreen',label='Rzeczywistość, α='+str(alfa))
+plt.axvline(x=avg-deltarzecz,color='limegreen')
+
+plt.title('Rozkład punktów: '+str(plane)+',\nn='+str(n)+ ',\nliczba próbek='+str(nrep))
+plt.xlabel('Liczba odległości do policzenia')
+plt.ylabel('Liczba próbek')
 plt.legend()
 plt.show()
 
