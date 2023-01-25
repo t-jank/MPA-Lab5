@@ -13,7 +13,7 @@ def points_generator(n, plane):
     Points=[]
     if plane=='s' or plane=='square':
         for i in range(0,n):
-            x = random.uniform(0,10*n)+100
+            x = random.uniform(0,10*n)
             y = random.uniform(0,10*n)
             Points.append([x,y])
     elif plane=='c' or plane=='circle':
@@ -24,6 +24,51 @@ def points_generator(n, plane):
             distance_from_centre = math.sqrt( (n/2-x)**2 + (n/2-y)**2 )
             if distance_from_centre <= ray:
                 Points.append([x,y])
+    elif plane=='b':
+        while(len(Points) < n):
+            x = random.uniform(0,10*n)
+            while x < 7.5*n and x > 2.5*n:
+                x = random.uniform(0,10*n)
+            y = random.uniform(0,10*n)
+            Points.append([x,y])
+    elif plane=='gd':
+        while(len(Points) < n):
+            y = random.uniform(0,10*n)
+            while y < 7.5*n and y > 2.5*n:
+                y = random.uniform(0,10*n)
+            x = random.uniform(0,10*n)
+            Points.append([x,y])
+    elif plane=='srh':
+        while(len(Points) < n):
+            y = random.uniform(0,10*n)
+            while y > 7.5*n or y < 2.5*n:
+                y = random.uniform(0,10*n)
+            x = random.uniform(0,10*n)
+            Points.append([x,y])
+    elif plane=='srv':
+        while(len(Points) < n):
+            x = random.uniform(0,10*n)
+            while x > 7.5*n or x < 2.5*n:
+                x = random.uniform(0,10*n)
+            y = random.uniform(0,10*n)
+            Points.append([x,y])
+    elif plane=='n':
+        for i in range(0,n):
+            x = random.gauss(mu=5*n, sigma=2.5*n)
+            y = random.gauss(mu=5*n, sigma=2.5*n)
+            Points.append([x,y])
+    elif plane=='invn':
+        while(len(Points) < n):
+            p=random.random()
+            x = random.uniform(0,10*n)
+            if p>0.5:
+                while x < 7.5*n and x > 2.5*n:
+                    x = random.uniform(0,10*n)
+            y = random.uniform(0,10*n)
+            if p>0.5:
+                while y < 7.5*n and y > 2.5*n:
+                    y = random.uniform(0,10*n)
+            Points.append([x,y])
     else:
         print("Plane undefined")
         return 0
@@ -108,19 +153,35 @@ def nearest_points(points):
 
 
 
-plane = 's'
+plane = 'c'
 nMin=5
-nMax=1000
-nStep=130
+nMax=10000
+nStep=1300
 nRepeat=10
-
+'''
 for n in range(nMin,nMax,nStep):
     counter_of_distances_to_compute=0
     points=points_generator(n, plane)
     points=sorted(points, key=lambda k: [k[1], k[0]]) # sort points by y
     np=nearest_points(points)
-    plt.scatter(n,counter_of_distances_to_compute,color='k')
-
+    if n==nMin:
+        plt.scatter(n,counter_of_distances_to_compute,color='k',label='symulacja')
+        plt.scatter(n,n*math.log(n),color='hotpink',label='n log n')
+        plt.scatter(n,n*math.log(n)*math.log(math.log(n)),color='orangered',label='n log n loglog n')
+    else:
+        plt.scatter(n,counter_of_distances_to_compute,color='k')
+        plt.scatter(n,n*math.log(n),color='hotpink')
+        plt.scatter(n,n*math.log(n)*math.log(math.log(n)),color='orangered')
+        
+plt.title('Kwadrat')
 plt.xlabel('n')
 plt.ylabel('Liczba odległości do policzenia')
-plt.title('Kwadrat')
+plt.legend()
+plt.show()
+'''
+n=200
+points=points_generator(n, plane)
+draw_points(points,'k')
+np=nearest_points(points)
+draw_points(np,'orangered')
+plt.show()
