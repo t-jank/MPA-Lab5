@@ -7,6 +7,7 @@ Created on Wed Dec 28 10:47:49 2022
 import random
 import math
 import matplotlib.pyplot as plt
+import statistics
 
 
 def points_generator(n, plane):
@@ -153,35 +154,33 @@ def nearest_points(points):
 
 
 
-plane = 'c'
+plane = 'invn'
 nMin=5
 nMax=10000
-nStep=1300
-nRepeat=10
-'''
+nStep=100
+nRepeat=5
+
+ox=[]
+nlogn=[]
+dupa=[]
 for n in range(nMin,nMax,nStep):
     counter_of_distances_to_compute=0
-    points=points_generator(n, plane)
-    points=sorted(points, key=lambda k: [k[1], k[0]]) # sort points by y
-    np=nearest_points(points)
+    for r in range(0,nRepeat):
+        points=points_generator(n, plane)
+        points=sorted(points, key=lambda k: [k[1], k[0]]) # sort points by y
+        np=nearest_points(points)
+    ox.append(n)
+    wsp=1.68
+    nlogn.append(wsp*n*math.log(n))
     if n==nMin:
-        plt.scatter(n,counter_of_distances_to_compute,color='k',label='symulacja')
-        plt.scatter(n,n*math.log(n),color='hotpink',label='n log n')
-        plt.scatter(n,n*math.log(n)*math.log(math.log(n)),color='orangered',label='n log n loglog n')
+        plt.scatter(n,counter_of_distances_to_compute/nRepeat,color='k',label='symulacja')
     else:
-        plt.scatter(n,counter_of_distances_to_compute,color='k')
-        plt.scatter(n,n*math.log(n),color='hotpink')
-        plt.scatter(n,n*math.log(n)*math.log(math.log(n)),color='orangered')
-        
-plt.title('Kwadrat')
+        plt.scatter(n,counter_of_distances_to_compute/nRepeat,color='k')
+plt.plot(ox,nlogn,color='orangered',label=str(wsp)+'*n*logn',linewidth=2.5)
+
+plt.title(plane)
 plt.xlabel('n')
 plt.ylabel('Liczba odległości do policzenia')
 plt.legend()
 plt.show()
-'''
-n=200
-points=points_generator(n, plane)
-draw_points(points,'k')
-np=nearest_points(points)
-draw_points(np,'orangered')
-plt.show()
+
